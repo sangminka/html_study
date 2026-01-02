@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Roboto", Arial, sans-serif;
+        background-color: #0f0f0f;
+        color: #fff;
+      }
+
+      /* Header */
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        background-color: #212121;
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        z-index: 100;
+        border-bottom: 1px solid #303030;
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .menu-icon {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        color: #fff;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        color: #fff;
+        font-size: 20px;
+        font-weight: bold;
+        text-decoration: none;
+      }
+
+      .logo-icon {
+        color: #ff0000;
+        margin-right: 4px;
+      }
+
+      .header-center {
+        flex: 1;
+        max-width: 640px;
+        margin: 0 40px;
+        display: flex;
+        align-items: center;
+      }
+
+      .search-container {
+        display: flex;
+        flex: 1;
+        height: 40px;
+      }
+
+      .search-input {
+        flex: 1;
+        background-color: #121212;
+        border: 1px solid #303030;
+        border-right: none;
+        padding: 0 16px;
+        color: #fff;
+        font-size: 16px;
+        border-radius: 40px 0 0 40px;
+      }
+
+      .search-input:focus {
+        outline: none;
+        border-color: #1c62b9;
+      }
+
+      .search-button {
+        width: 64px;
+        background-color: #303030;
+        border: 1px solid #303030;
+        border-left: none;
+        border-radius: 0 40px 40px 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .icon-button {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+      }
+
+      .profile-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: #ff6b6b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-weight: bold;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .profile-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        margin-top: 8px;
+        background-color: #282828;
+        border-radius: 12px;
+        min-width: 300px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 1000;
+      }
+
+      .profile-menu.show {
+        display: flex;
+      }
+
+      .profile-menu-header {
+        padding: 16px;
+        border-bottom: 1px solid #3f3f3f;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .profile-menu-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #ff6b6b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-weight: bold;
+        font-size: 18px;
+      }
+
+      .profile-menu-info {
+        flex: 1;
+      }
+
+      .profile-menu-name {
+        color: #fff;
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 4px;
+      }
+
+      .profile-menu-email {
+        color: #aaa;
+        font-size: 14px;
+      }
+
+      .profile-menu-item {
+        padding: 12px 16px;
+        color: #fff;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .profile-menu-item:hover {
+        background-color: #3f3f3f;
+      }
+
+      .profile-menu-item-icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .profile-menu-divider {
+        height: 1px;
+        background-color: #3f3f3f;
+        margin: 8px 0;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 56px;
+        width: 240px;
+        height: calc(100vh - 56px);
+        background-color: #212121;
+        overflow-y: auto;
+        padding: 12px 0;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        padding: 10px 24px;
+        color: #fff;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .sidebar-item:hover {
+        background-color: #303030;
+      }
+
+      .sidebar-item.active {
+        background-color: #303030;
+      }
+
+      .sidebar-icon {
+        width: 24px;
+        height: 24px;
+        margin-right: 24px;
+      }
+
+      /* Main Content */
+      .main-content {
+        margin-left: 240px;
+        margin-top: 56px;
+        padding: 24px;
+      }
+
+      /* Video Grid */
+      .video-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 16px;
+      }
+
+      .video-card {
+        cursor: pointer;
+      }
+
+      .thumbnail-container {
+        position: relative;
+        width: 100%;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        background-color: #181818;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 12px;
+      }
+
+      .thumbnail {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .video-duration {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .video-info {
+        display: flex;
+        gap: 12px;
+      }
+
+      .channel-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: #606060;
+        flex-shrink: 0;
+      }
+
+      .video-details {
+        flex: 1;
+      }
+
+      .video-title {
+        color: #fff;
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 4px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .channel-name {
+        color: #aaa;
+        font-size: 14px;
+        margin-bottom: 2px;
+      }
+
+      .video-stats {
+        color: #aaa;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="header-left">
+        <div class="menu-icon">☰</div>
+        <a href="#" class="logo">
+          <span class="logo-icon">▶</span>
+          YouTube
+        </a>
+      </div>
+      <div class="header-center">
+        <div class="search-container">
+          <input type="text" class="search-input" placeholder="검색" />
+          <button class="search-button">🔍</button>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="icon-button">📹</button>
+        <button class="icon-button">🔔</button>
+        <div class="profile-icon" id="profileIcon">A</div>
+        <div class="profile-menu" id="profileMenu">
+          <div class="profile-menu-header">
+            <div class="profile-menu-avatar">A</div>
+            <div class="profile-menu-info">
+              <div class="profile-menu-name">내 계정</div>
+              <div class="profile-menu-email">user@example.com</div>
+            </div>
+          </div>
+          <a href="#" class="profile-menu-item">
+            <span class="profile-menu-item-icon">👤</span>
+            <span>내 채널</span>
+          </a>
+          <a href="#" class="profile-menu-item">
+            <span class="profile-menu-item-icon">🎬</span>
+            <span>YouTube Studio</span>
+          </a>
+          <a href="#" class="profile-menu-item">
+            <span class="profile-menu-item-icon">🔄</span>
+            <span>계정 전환</span>
+          </a>
+          <div class="profile-menu-divider"></div>
+          <a href="#" class="profile-menu-item">
+            <span class="profile-menu-item-icon">⚙️</span>
+            <span>설정</span>
+          </a>
+          <a href="#" class="profile-menu-item">
+            <span class="profile-menu-item-icon">🌐</span>
+            <span>언어: 한국어</span>
+          </a>
+          <a href="#" class="profile-menu-item">
+            <span class="profile-menu-item-icon">🔒</span>
+            <span>제한 모드: 끄기</span>
+          </a>
+          <div class="profile-menu-divider"></div>
+          <a href="#" class="profile-menu-item">
+            <span class="profile-menu-item-icon">❓</span>
+            <span>의견 보내기</span>
+          </a>
+          <a href="#" class="profile-menu-item">
+            <span class="profile-menu-item-icon">❓</span>
+            <span>도움말</span>
+          </a>
+          <div class="profile-menu-divider"></div>
+          <a href="#" class="profile-menu-item">
+            <span class="profile-menu-item-icon">🚪</span>
+            <span>로그아웃</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <a href="#" class="sidebar-item active">
+        <span class="sidebar-icon">🏠</span>
+        <span>홈</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <span class="sidebar-icon">🔥</span>
+        <span>인기</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <span class="sidebar-icon">📺</span>
+        <span>구독</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <span class="sidebar-icon">📚</span>
+        <span>라이브러리</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <span class="sidebar-icon">📜</span>
+        <span>시청 기록</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <span class="sidebar-icon">⏰</span>
+        <span>나중에 볼 동영상</span>
+      </a>
+      <a href="#" class="sidebar-item">
+        <span class="sidebar-icon">👍</span>
+        <span>좋아요 표시한 동영상</span>
+      </a>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="video-grid">
+        <!-- Video Card 1 -->
+        <div class="video-card">
+          <div class="thumbnail-container">
+            <div
+              class="thumbnail"
+              style="
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              "
+            ></div>
+            <span class="video-duration">10:24</span>
+          </div>
+          <div class="video-info">
+            <div class="channel-avatar"></div>
+            <div class="video-details">
+              <div class="video-title">
+                HTML과 CSS로 웹사이트 만들기 - 초보자를 위한 완벽 가이드
+              </div>
+              <div class="channel-name">코딩튜토리얼</div>
+              <div class="video-stats">조회수 125만회 • 2주 전</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Card 2 -->
+        <div class="video-card">
+          <div class="thumbnail-container">
+            <div
+              class="thumbnail"
+              style="
+                background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+              "
+            ></div>
+            <span class="video-duration">15:42</span>
+          </div>
+          <div class="video-info">
+            <div class="channel-avatar"></div>
+            <div class="video-details">
+              <div class="video-title">
+                JavaScript 기초부터 고급까지 - 실전 프로젝트 포함
+              </div>
+              <div class="channel-name">프로그래밍마스터</div>
+              <div class="video-stats">조회수 89만회 • 3일 전</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Card 3 -->
+        <div class="video-card">
+          <div class="thumbnail-container">
+            <div
+              class="thumbnail"
+              style="
+                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+              "
+            ></div>
+            <span class="video-duration">8:15</span>
+          </div>
+          <div class="video-info">
+            <div class="channel-avatar"></div>
+            <div class="video-details">
+              <div class="video-title">
+                React로 만드는 첫 번째 앱 - Todo List 만들기
+              </div>
+              <div class="channel-name">리액트코딩</div>
+              <div class="video-stats">조회수 234만회 • 1주 전</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Card 4 -->
+        <div class="video-card">
+          <div class="thumbnail-container">
+            <div
+              class="thumbnail"
+              style="
+                background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+              "
+            ></div>
+            <span class="video-duration">12:30</span>
+          </div>
+          <div class="video-info">
+            <div class="channel-avatar"></div>
+            <div class="video-details">
+              <div class="video-title">
+                Python으로 데이터 분석하기 - Pandas 완전정복
+              </div>
+              <div class="channel-name">데이터사이언스</div>
+              <div class="video-stats">조회수 156만회 • 5일 전</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Card 5 -->
+        <div class="video-card">
+          <div class="thumbnail-container">
+            <div
+              class="thumbnail"
+              style="
+                background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+              "
+            ></div>
+            <span class="video-duration">20:45</span>
+          </div>
+          <div class="video-info">
+            <div class="channel-avatar"></div>
+            <div class="video-details">
+              <div class="video-title">
+                웹 개발 풀스택 로드맵 2024 - 취업까지 한 번에
+              </div>
+              <div class="channel-name">개발자로살기</div>
+              <div class="video-stats">조회수 567만회 • 1개월 전</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Card 6 -->
+        <div class="video-card">
+          <div class="thumbnail-container">
+            <div
+              class="thumbnail"
+              style="
+                background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+              "
+            ></div>
+            <span class="video-duration">6:22</span>
+          </div>
+          <div class="video-info">
+            <div class="channel-avatar"></div>
+            <div class="video-details">
+              <div class="video-title">
+                Git과 GitHub 사용법 - 협업을 위한 필수 가이드
+              </div>
+              <div class="channel-name">버전관리마스터</div>
+              <div class="video-stats">조회수 98만회 • 1주 전</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Card 7 -->
+        <div class="video-card">
+          <div class="thumbnail-container">
+            <div
+              class="thumbnail"
+              style="
+                background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+              "
+            ></div>
+            <span class="video-duration">14:18</span>
+          </div>
+          <div class="video-info">
+            <div class="channel-avatar"></div>
+            <div class="video-details">
+              <div class="video-title">
+                Node.js로 서버 만들기 - Express.js 기초
+              </div>
+              <div class="channel-name">백엔드개발</div>
+              <div class="video-stats">조회수 112만회 • 4일 전</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video Card 8 -->
+        <div class="video-card">
+          <div class="thumbnail-container">
+            <div
+              class="thumbnail"
+              style="
+                background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+              "
+            ></div>
+            <span class="video-duration">9:55</span>
+          </div>
+          <div class="video-info">
+            <div class="channel-avatar"></div>
+            <div class="video-details">
+              <div class="video-title">
+                TypeScript 시작하기 - JavaScript 개발자를 위한 가이드
+              </div>
+              <div class="channel-name">타입스크립트코딩</div>
+              <div class="video-stats">조회수 76만회 • 6일 전</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const profileIcon = document.getElementById("profileIcon");
+      const profileMenu = document.getElementById("profileMenu");
+
+      profileIcon.addEventListener("click", function (e) {
+        e.stopPropagation();
+        profileMenu.classList.toggle("show");
+      });
+
+      // 메뉴 외부 클릭 시 닫기
+      document.addEventListener("click", function (e) {
+        if (
+          !profileIcon.contains(e.target) &&
+          !profileMenu.contains(e.target)
+        ) {
+          profileMenu.classList.remove("show");
+        }
+      });
+    </script>
+  </body>
+</html>
